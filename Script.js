@@ -1,82 +1,82 @@
-// كود الجافاسكربت للتفاعلات
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // Smooth scrolling for navigation links
-    const navLinks = document.querySelectorAll('.nav-links a');
-    
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
-            window.scrollTo({
-                top: targetSection.offsetTop - 80,
-                behavior: 'smooth'
-            });
-        });
-    });
+// إضافة دوال للصفحات الجديدة
 
-    // إضافة تأثيرات للكروت
-    const adCards = document.querySelectorAll('.ad-card');
-    
-    adCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px)';
-        });
+// إدارة نموذج الاتصال
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
         
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-
-    // تحديث الإحصائيات بشكل ديناميكي
-    function updateStats() {
-        const stats = document.querySelectorAll('.stat-item h3');
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            subject: document.getElementById('subject').value,
+            message: document.getElementById('message').value
+        };
         
-        stats.forEach(stat => {
-            const target = parseInt(stat.textContent.replace('$', '').replace(',', ''));
-            let current = 0;
-            const increment = target / 100;
-            
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
-                }
-                
-                if (stat.textContent.includes('$')) {
-                    stat.textContent = Math.floor(current).toLocaleString() + '$';
-                } else {
-                    stat.textContent = Math.floor(current).toLocaleString();
-                }
-            }, 20);
-        });
-    }
+        // هنا يمكنك إضافة كود إرسال البيانات للخادم
+        console.log('بيانات النموذج:', formData);
+        
+        // عرض رسالة نجاح
+        alert('شكراً لك! تم إرسال رسالتك بنجاح وسنتواصل معك قريباً.');
+        
+        // إعادة تعيين النموذج
+        contactForm.reset();
+    });
+}
 
-    // تشغيل تحديث الإحصائيات عند الوصول للقسم
+// تحميل إعلانات أدسنس عند التمرير
+function loadAdsOnScroll() {
+    const adContainers = document.querySelectorAll('.adsbygoogle');
+    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                updateStats();
+                // إعادة تحميل الإعلان عندما يصبح مرئياً
+                if (window.adsbygoogle) {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                }
                 observer.unobserve(entry.target);
             }
         });
     });
+    
+    adContainers.forEach(container => {
+        observer.observe(container);
+    });
+}
 
-    observer.observe(document.querySelector('.stats'));
+// إدارة النقر على الإعلانات
+function trackAdClicks() {
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.adsbygoogle')) {
+            // تتبع النقر على الإعلانات
+            console.log('تم النقر على إعلان أدسنس');
+            // هنا يمكنك إضافة كود التحليلات
+        }
+    });
+}
 
-    // إدارة إعلانات أدسنس
-    function loadAds() {
-        // إعادة تحميل الإعلانات كل 30 دقيقة
-        setInterval(() => {
-            if (window.adsbygoogle) {
-                (adsbygoogle = window.adsbygoogle || []).push({});
+// تهيئة جميع الدوال عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    loadAdsOnScroll();
+    trackAdClicks();
+    
+    // إضافة تأثيرات للعناصر عند التمرير
+    const animatedElements = document.querySelectorAll('.about-text, .contact-form, .info-item');
+    
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
             }
-        }, 1800000); // 30 دقيقة
-    }
-
-    loadAds();
+        });
+    });
+    
+    animatedElements.forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(30px)';
+        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        scrollObserver.observe(element);
+    });
 });
